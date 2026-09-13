@@ -1,15 +1,7 @@
 self.addEventListener('install', (e) => {
   e.waitUntil(
-    caches.open('flashcards-v1').then((cache) => {
-      return cache.addAll(['./', './index.html']);
-    })
-  );
-});
-
-self.addEventListener('fetch', (e) => {
-  e.respondWith(
-    caches.match(e.request).then((response) => {
-      return response || fetch(e.request);
+    caches.open('flashcards-v2').then((cache) => { // Alterado de v1 para v2
+      return cache.addAll(['./', './index.html', './manifest.json']);
     })
   );
 });
