@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Flashcards - Cirurgia Cardíaca & Anestesia</title>
+    <title>Flashcards - VET</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f172a">
@@ -504,8 +504,8 @@
             <button class="icon-btn" onclick="toggleTheme()">🌓 Tema</button>
             <button class="icon-btn" onclick="openAdminModal()">⚙️ Admin</button>
         </div>
-        <h1>Flashcards MED</h1>
-        <p>Revisão Interativa de Cirurgia Cardíaca</p>
+        <h1>Medicina Veterinária</h1>
+        <p>Revisão Procedimentos e Cirurgias</p>
         
         <div class="search-container">
             <span class="search-icon">🔍</span>
@@ -790,11 +790,16 @@
                 container.appendChild(section);
             }
 
+            // Observer para fazer os tópicos/cartões aparecerem e sumirem dinamicamente na rolagem
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    if (entry.isIntersecting) entry.target.classList.add('visible');
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    } else {
+                        entry.target.classList.remove('visible');
+                    }
                 });
-            }, { threshold: 0.1 });
+            }, { threshold: 0.15 });
 
             document.querySelectorAll('.category-section').forEach(sec => observer.observe(sec));
         }
