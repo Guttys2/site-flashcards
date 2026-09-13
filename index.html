@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0f172a">
     <title>Flashcards - Cirurgia Cardíaca & Anestesia</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <link rel="apple-touch-icon" href="./vet-heart.png">
     
     <style>
         :root {
@@ -57,7 +58,7 @@
             overflow-x: hidden;
             display: flex;
             flex-direction: column;
-            align-items: center; /* Garante alinhamento geral ao centro em desktop */
+            align-items: center;
         }
 
         h1, h2, h3, .category-title, header p {
@@ -74,7 +75,7 @@
             width: 100%;
             display: flex;
             flex-direction: column;
-            align-items: center; /* Centraliza o conteúdo interno do header */
+            align-items: center;
         }
 
         h1 {
@@ -113,7 +114,6 @@
             transition: all 0.3s ease;
         }
 
-        /* Barra de pesquisa centralizada */
         .search-container {
             width: 100%;
             max-width: 500px;
@@ -155,7 +155,6 @@
             pointer-events: none;
         }
 
-        /* Menu retrátil centralizado e limitado */
         .sticky-nav {
             position: sticky;
             top: 0;
@@ -164,7 +163,7 @@
             padding: 10px 15px;
             z-index: 100;
             display: flex;
-            justify-content: center; /* Centraliza as pílulas em desktop se houver espaço */
+            justify-content: center;
             gap: 8px;
             overflow-x: auto;
             border-bottom: 1px solid var(--border-color);
@@ -262,11 +261,6 @@
             transform: rotateY(180deg);
         }
 
-        /* Quando o cartão for virado, inverte a rotação para manter o menu legível */
-        .card.flipped .card-options-container {
-            transform: rotateY(-180deg);
-        }
-
         .card-front, .card-back {
             position: absolute;
             width: 100%;
@@ -314,6 +308,10 @@
             z-index: 50;
         }
 
+        .card.flipped .card-options-container {
+            transform: none; 
+        }
+
         .dots-btn {
             background: var(--input-bg);
             border: 1px solid var(--border-color);
@@ -342,12 +340,6 @@
             transform: scale(0.8) translateY(-10px);
             pointer-events: none;
             transition: all 0.25s ease;
-        }
-        /* Quando faltar espaço na lateral ou o cartão estiver virado próximo à borda */
-        .dropdown-menu.align-left {
-            right: auto;
-            left: 0;
-            transform-origin: top left; /* Inverte a origem da animação para a esquerda */
         }
 
         .dropdown-menu.active {
@@ -517,7 +509,7 @@
         
         <div class="search-container">
             <span class="search-icon">🔍</span>
-            <input type="text" id="search-input" class="search-input" placeholder="Pesquisar perguntas ou respostas..." oninput="filterCards()">
+            <input type="text" id="search-input" class="search-input" placeholder="Pesquisar perguntas..." oninput="filterCards()">
         </div>
     </header>
 
@@ -763,7 +755,6 @@
                     const cardEl = document.createElement('div');
                     cardEl.className = 'card';
                     cardEl.setAttribute('data-question', cartao.q.toLowerCase());
-                    cardEl.setAttribute('data-answer', cartao.a.toLowerCase());
                     
                     cardEl.onclick = (e) => {
                         if (!e.target.closest('.card-options-container')) {
@@ -771,13 +762,15 @@
                         }
                     };
 
+                    const safeCatId = categoria.replace(/[^a-zA-Z0-9]/g, '_');
+
                     cardEl.innerHTML = `
                         <div class="card-inner">
                             <div class="card-options-container">
-                                <button class="dots-btn" onclick="toggleCardMenu(event, '${CSS.escape(categoria)}', ${index})" title="Opções">⋮</button>
-                                <div class="dropdown-menu" id="menu-${CSS.escape(categoria)}-${index}">
-                                    <button class="dropdown-item" onclick="editCardDirect('${CSS.escape(categoria)}', ${index})">✏️ Editar</button>
-                                    <button class="dropdown-item danger" onclick="deleteCard('${CSS.escape(categoria)}', ${index})">🗑️ Excluir</button>
+                                <button class="dots-btn" onclick="toggleCardMenu(event, '${safeCatId}', ${index})" title="Opções">⋮</button>
+                                <div class="dropdown-menu" id="menu-${safeCatId}-${index}">
+                                    <button class="dropdown-item" onclick="editCardDirect('${categoria.replace(/'/g, "\\'")}', ${index})">✏️ Editar</button>
+                                    <button class="dropdown-item danger" onclick="deleteCard('${categoria.replace(/'/g, "\\'")}', ${index})">🗑️ Excluir</button>
                                 </div>
                             </div>
                             <div class="card-front">
@@ -819,7 +812,6 @@
                     const rawQ = card.getAttribute('data-question');
                     const qText = rawQ.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-                    // Filtra exclusivamente pelo texto da pergunta
                     if (qText.includes(query)) {
                         card.style.display = 'block';
                         hasVisibleCard = true;
@@ -832,17 +824,16 @@
             });
         }
 
-        function toggleCardMenu(event, cat, index) {
+        function toggleCardMenu(event, safeCatId, index) {
             event.stopPropagation();
             
-            // Fecha todos os outros menus abertos
             document.querySelectorAll('.dropdown-menu').forEach(menu => {
-                if (menu.id !== `menu-${cat}-${index}`) {
+                if (menu.id !== `menu-${safeCatId}-${index}`) {
                     menu.classList.remove('active');
                 }
             });
 
-            const menu = document.getElementById(`menu-${cat}-${index}`);
+            const menu = document.getElementById(`menu-${safeCatId}-${index}`);
             if (menu) {
                 menu.classList.toggle('active');
             }
@@ -979,14 +970,15 @@
             }
         }
 
-        renderApp();
         if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-            .then(() => console.log('Service Worker registrado com sucesso!'))
-            .catch((err) => console.log('Erro ao registrar Service Worker:', err));
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(() => console.log('Service Worker registrado com sucesso!'))
+                    .catch((err) => console.log('Erro ao registrar Service Worker:', err));
             });
         }
+
+        renderApp();
     </script>
 </body>
 </html>
