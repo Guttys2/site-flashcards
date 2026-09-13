@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cirurgia Cardíaca</title>
+    <!-- Importando fonte moderna do Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* === VARIÁVEIS E RESET === */
+        :root {
+            --bg-color: #f0f2f5;
+            --text-main: #2d3436;
+            --text-muted: #636e72;
+            --card-bg: #ffffff;
+            --nav-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding-bottom: 50px;
+        }
+
+        /* === CABEÇALHO === */
+        header {
+            text-align: center;
+            padding: 60px 20px 40px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* === MENU DE NAVEGAÇÃO === */
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            background: var(--nav-bg);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .nav-pill {
+            text-decoration: none;
+            color: var(--text-main);
+            background: #e1e8f0;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-pill:hover {
+            transform: translateY(-2px);
+            filter: brightness(0.95);
+        }
+
+        /* === SEÇÕES E GRID === */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .category-section {
+            margin-top: 60px;
+            margin-bottom: 40px;
+            /* A animação de entrada começa transparente e deslocada */
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        /* Classe ativada via JavaScript quando a seção entra na tela */
+        .category-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .category-title {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            display: inline-block;
+            padding-bottom: 5px;
+            border-bottom: 4px solid var(--cat-color, #333); /* Cor dinâmica */
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        /* === ESTILOS DOS CARTÕES (3D) === */
+        .card {
+            background-color: transparent;
+            height: 250px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        }
+
+        /* Animação Hover no cartão todo */
+        .card:hover .card-inner {
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        /* O hover levanta o cartão se não estiver virado */
+        .card:not(.flipped):hover .card-inner {
+            transform: translateY(-8px);
+        }
+
+        /* Giro do cartão */
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+            border-radius: 20px;
+            box-sizing: border-box;
+        }
+
+        .card-front {
+            background-color: var(--card-bg);
+            border-top: 6px solid var(--cat-color);
+            color: var(--text-main);
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .card-back {
+            background-color: var(--cat-color);
+            color: #ffffff;
+            transform: rotateY(180deg);
+            font-size: 1.05rem;
+            font-weight: 400;
+            overflow-y: auto;
+            border: 2px solid transparent;
+        }
+
+        .click-hint {
+            position: absolute;
+            bottom: 15px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Animação de pulsar sutil na dica de clique */
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+        .click-hint {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Flashcards MED</h1>
+        <p>Revisão e Estudos</p>
+    </header>
+
+    <!-- Menu gerado dinamicamente -->
+    <nav class="sticky-nav" id="nav-menu"></nav>
+
+    <main id="app-container">
+        <!-- Cartões renderizados aqui -->
+    </main>
+
+    <script>
+        /* === DADOS === */
+        const conteudos = {
+            "Hemodinâmica": [
+                { q: "O que é pré-carga?", a: "Volume/estiramento ventricular no fim da diástole." },
+                { q: "O que é pós-carga?", a: "Resistência à ejeção ventricular." },
+                { q: "O que é contratilidade?", a: "Capacidade intrínseca do miocárdio de gerar força." },
+                { q: "Como calcular o débito cardíaco?", a: "Frequência Cardíaca (FC) × Volume Sistólico." },
+                { q: "Como calcular a PAM?", a: "Débito cardíaco × Resistência Vascular Sistêmica (RVS)." },
+                { q: "O que diz a Lei de Frank-Starling?", a: "O aumento da pré-carga aumenta a força de contração até um determinado limite." }
+            ],
+            "Curva Pressão-Volume": [
+                { q: "O que caracteriza a contração isovolumétrica?", a: "A pressão aumenta sem alteração do volume." },
+                { q: "O que caracteriza a fase de ejeção?", a: "Abertura da valva semilunar e redução do volume ventricular." },
+                { q: "Como se calcula o volume sistólico na curva?", a: "Volume Diastólico Final (VDF) − Volume Sistólico Final (VSF)." },
+                { q: "Como o aumento da contratilidade afeta a curva?", a: "Reduz o VSF e aumenta o volume sistólico." }
+            ],
+            "Circulação Extracorpórea": [
+                { q: "Quais os objetivos da CEC?", a: "Manter perfusão sistêmica, oxigenação e remoção de CO₂." },
+                { q: "Qual a função do oxigenador na CEC?", a: "Realiza a troca gasosa." },
+                { q: "O que é o Priming da CEC?", a: "É a solução utilizada para preencher o circuito antes da CEC iniciar." },
+                { q: "Por que avaliar apenas a PAM na CEC é insuficiente?", a: "Porque a pressão não garante perfusão adequada." },
+                { q: "Qual a importância do lactato durante a CEC?", a: "É um marcador importante de inadequação entre oferta e consumo de O₂." }
+            ],
+            "Hipotermia": [
+                { q: "Qual o efeito fisiológico da hipotermia?", a: "Reduz o metabolismo e o consumo de O₂." },
+                { q: "Quais os riscos da hipotermia?", a: "Coagulopatia, arritmias, alteração enzimática e atraso no metabolismo de fármacos." },
+                { q: "Quais os riscos do reaquecimento rápido?", a: "Pode favorecer hipertermia cerebral e alterações gasométricas." }
+            ],
+            "Cardioplegia e Anticoagulação": [
+                { q: "Qual a função da Heparina e como monitorá-la?", a: "Impede a coagulação. É monitorada pelo ACT (Tempo de Coagulação Ativada)." },
+                { q: "Qual a função da Protamina e seus riscos?", a: "Neutraliza a heparina. O excesso pode prejudicar a coagulação e a função plaquetária." },
+                { q: "Qual o mecanismo da cardioplegia hipercalêmica?", a: "Despolariza a membrana e interrompe a atividade elétrica celular." },
+                { q: "O que é o Stunning miocárdico?", a: "Disfunção contrátil transitória após isquemia/reperfusão, apesar da recuperação da perfusão." }
+            ],
+            "Checklists": [
+                { q: "Checklist para saída da CEC?", a: "Corrigir temperatura, acidose e eletrólitos; garantir ventilação, ritmo cardíaco, volemia, função ventricular, resistência e desareação." },
+                { q: "Causas de hipotensão após CEC?", a: "Hipovolemia, vasoplegia, disfunção VE/VD, arritmia, tamponamento, obstrução mecânica e isquemia miocárdica." }
+            ]
+        };
+
+        /* Paleta de cores para as categorias */
+        const cores = ['#ff7675', '#0984e3', '#00b894', '#6c5ce7', '#fdcb6e', '#e17055'];
+        
+        const container = document.getElementById('app-container');
+        const navMenu = document.getElementById('nav-menu');
+        
+        let colorIndex = 0;
+
+        for (const [categoria, cartoes] of Object.entries(conteudos)) {
+            // Define a cor da categoria
+            const corAtual = cores[colorIndex % cores.length];
+            const idSecao = 'sec-' + colorIndex;
+            colorIndex++;
+
+            // Cria o link no menu superior
+            const navLink = document.createElement('a');
+            navLink.href = '#' + idSecao;
+            navLink.className = 'nav-pill';
+            navLink.textContent = categoria;
+            // Efeito hover dinâmico no menu
+            navLink.onmouseover = () => navLink.style.backgroundColor = corAtual;
+            navLink.onmouseover = () => navLink.style.color = "white";
+            navLink.onmouseout = () => {
+                navLink.style.backgroundColor = "#e1e8f0";
+                navLink.style.color = "var(--text-main)";
+            };
+            navMenu.appendChild(navLink);
+
+            // Cria a seção da categoria
+            const section = document.createElement('div');
+            section.className = 'category-section';
+            section.id = idSecao;
+            // Passa a cor via variável CSS inline
+            section.style.setProperty('--cat-color', corAtual);
+            
+            const title = document.createElement('h2');
+            title.className = 'category-title';
+            title.textContent = categoria;
+            
+            const grid = document.createElement('div');
+            grid.className = 'grid';
+
+            // Cria os cartões
+            cartoes.forEach(cartao => {
+                const cardEl = document.createElement('div');
+                cardEl.className = 'card';
+                cardEl.onclick = function() {
+                    this.classList.toggle('flipped');
+                };
+
+                cardEl.innerHTML = `
+                    <div class="card-inner">
+                        <div class="card-front">
+                            ${cartao.q}
+                            <span class="click-hint">↻ Tocar para virar</span>
+                        </div>
+                        <div class="card-back">
+                            ${cartao.a}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(cardEl);
+            });
+
+            section.appendChild(title);
+            section.appendChild(grid);
+            container.appendChild(section);
+        }
+
+        /* === INTERSECTION OBSERVER PARA ANIMAÇÃO DE ROLAGEM === */
+        // Faz as seções aparecerem suavemente quando entram na tela
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // Opcional: parar de observar após a primeira animação
+                    // observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 }); // 10% da seção visível dispara a animação
+
+        document.querySelectorAll('.category-section').forEach(sec => {
+            observer.observe(sec);
+        });
+
+    </script>
+</body>
+</html>
