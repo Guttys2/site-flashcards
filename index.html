@@ -2,7 +2,7 @@
 <html lang="pt-BR" data-theme="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Flashcards - Cirurgia Cardíaca & Anestesia</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
     
@@ -50,7 +50,12 @@
             color: var(--text-main);
             line-height: 1.6;
             padding-bottom: 60px;
+            width: 100%;
+            max-width: 100vw;
             overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Garante alinhamento geral ao centro em desktop */
         }
 
         h1, h2, h3, .category-title, header p {
@@ -59,104 +64,154 @@
 
         header {
             text-align: center;
-            padding: 60px 20px;
+            padding: 50px 15px 40px;
             background: var(--header-gradient);
             color: white;
             box-shadow: var(--shadow-sm);
             position: relative;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centraliza o conteúdo interno do header */
         }
 
         h1 {
-            font-size: 2.8rem;
+            font-size: 2.2rem;
             font-weight: 700;
             letter-spacing: -0.02em;
             margin-bottom: 8px;
-            animation: fadeInDown 0.8s ease-out;
             text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
         header p {
-            font-size: 1.15rem;
+            font-size: 1rem;
             opacity: 0.9;
             font-weight: 500;
-            animation: fadeInUp 0.8s ease-out;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
 
         .top-actions {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 15px;
+            right: 15px;
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
 
         .icon-btn {
             background: rgba(255, 255, 255, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 8px 14px;
-            border-radius: 12px;
+            padding: 6px 10px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             font-weight: 600;
             backdrop-filter: blur(8px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
         }
 
-        .icon-btn:hover {
+        /* Barra de pesquisa centralizada */
+        .search-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 25px auto 0;
+            position: relative;
+            padding: 0 15px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            color: white;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-input:focus {
+            outline: none;
             background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            border-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
 
+        .search-icon {
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            pointer-events: none;
+        }
+
+        /* Menu retrátil centralizado e limitado */
         .sticky-nav {
             position: sticky;
             top: 0;
             background: var(--nav-bg);
             backdrop-filter: blur(12px);
-            padding: 14px 20px;
+            padding: 10px 15px;
             z-index: 100;
             display: flex;
-            justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
+            justify-content: center; /* Centraliza as pílulas em desktop se houver espaço */
+            gap: 8px;
+            overflow-x: auto;
             border-bottom: 1px solid var(--border-color);
             box-shadow: var(--shadow-sm);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.35s ease;
+            scrollbar-width: none;
+            width: 100%;
+        }
+
+        .sticky-nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        .sticky-nav.hidden {
+            transform: translateY(-100%);
+            opacity: 0;
+            pointer-events: none;
         }
 
         .nav-pill {
             text-decoration: none;
             color: var(--text-main);
             background: var(--input-bg);
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-size: 0.85rem;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.78rem;
             font-weight: 600;
             border: 1px solid var(--border-color);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            text-shadow: var(--text-glow-light);
-        }
-
-        .nav-pill:hover {
-            background: #2563eb;
-            color: white;
-            border-color: #2563eb;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3);
+            white-space: nowrap;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
         }
 
         main {
+            width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 20px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
         }
 
         .category-section {
-            margin-top: 60px;
+            margin-top: 40px;
             opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            width: 100%;
         }
 
         .category-section.visible {
@@ -165,28 +220,29 @@
         }
 
         .category-title {
-            font-size: 1.8rem;
+            font-size: 1.4rem;
             font-weight: 700;
-            margin-bottom: 25px;
+            margin-bottom: 15px;
             display: inline-block;
-            padding-bottom: 6px;
+            padding-bottom: 4px;
             border-bottom: 4px solid var(--cat-color, #2563eb);
-            letter-spacing: -0.01em;
-            text-shadow: var(--text-glow-light);
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+            width: 100%;
+            justify-content: center;
         }
 
         .card {
             background-color: transparent;
-            height: 250px;
+            height: 230px;
             perspective: 1200px;
             cursor: pointer;
             position: relative;
+            width: 100%;
         }
 
         .card-inner {
@@ -196,17 +252,12 @@
             text-align: center;
             transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
             transform-style: preserve-3d;
-            border-radius: 20px;
+            border-radius: 16px;
             box-shadow: var(--shadow-sm);
         }
 
-        .card:hover .card-inner {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: var(--shadow-hover);
-        }
-
         .card.flipped .card-inner {
-            transform: rotateY(180deg) translateY(-4px);
+            transform: rotateY(180deg);
         }
 
         .card-front, .card-back {
@@ -217,8 +268,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 30px;
-            border-radius: 20px;
+            padding: 20px;
+            border-radius: 16px;
             box-sizing: border-box;
             border: 1px solid var(--border-color);
         }
@@ -227,85 +278,63 @@
             background-color: var(--card-bg);
             border-top: 6px solid var(--cat-color);
             color: var(--text-main);
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
-            text-shadow: var(--text-glow-light);
-            transition: text-shadow 0.3s ease;
-        }
-
-        .card:hover .card-front {
-            text-shadow: 0 2px 14px rgba(37, 99, 235, 0.25);
         }
 
         .card-back {
             background-color: var(--cat-color);
             color: #ffffff;
             transform: rotateY(180deg);
-            font-size: 1.05rem;
+            font-size: 0.95rem;
             font-weight: 500;
             overflow-y: auto;
             border: none;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
         }
 
         .click-hint {
             position: absolute;
-            bottom: 15px;
-            font-size: 0.75rem;
+            bottom: 10px;
+            font-size: 0.7rem;
             color: var(--text-muted);
             opacity: 0.8;
-            font-weight: 500;
         }
 
-        /* Container de opções dentro do card-inner para herdar o movimento 3D */
         .card-options-container {
             position: absolute;
-            top: 12px;
-            right: 12px;
+            top: 8px;
+            right: 8px;
             z-index: 30;
-            transform: translateZ(30px); /* Eleva levemente na profundidade 3D */
         }
 
         .dots-btn {
             background: var(--input-bg);
             border: 1px solid var(--border-color);
             color: var(--text-muted);
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
+            font-size: 1rem;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .dots-btn:hover {
-            background: #2563eb;
-            color: white;
-            border-color: #2563eb;
-            transform: scale(1.1);
         }
 
         .dropdown-menu {
             position: absolute;
-            top: 38px;
+            top: 32px;
             right: 0;
             background: var(--modal-bg);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             z-index: 40;
-            min-width: 130px;
-            
-            /* Animação suave e fluida integrada */
+            min-width: 120px;
             opacity: 0;
             transform: scale(0.8) translateY(-10px);
             pointer-events: none;
-            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.25s ease;
         }
 
         .dropdown-menu.active {
@@ -315,8 +344,8 @@
         }
 
         .dropdown-item {
-            padding: 10px 14px;
-            font-size: 0.85rem;
+            padding: 8px 12px;
+            font-size: 0.8rem;
             font-weight: 600;
             color: var(--text-main);
             cursor: pointer;
@@ -325,7 +354,6 @@
             border: none;
             width: 100%;
             display: block;
-            transition: background 0.2s, color 0.2s;
         }
 
         .dropdown-item:hover {
@@ -342,155 +370,113 @@
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(6px);
             z-index: 1000;
             align-items: center;
             justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            padding: 15px;
         }
 
         .modal.active {
             display: flex;
-            opacity: 1;
         }
 
         .modal-content {
             background: var(--modal-bg);
-            padding: 35px;
-            border-radius: 24px;
-            width: 90%;
-            max-width: 650px;
-            max-height: 85vh;
+            padding: 20px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 550px;
+            max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             position: relative;
-            transform: scale(0.9) translateY(20px);
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             border: 1px solid var(--border-color);
         }
 
-        .modal.active .modal-content {
-            transform: scale(1) translateY(0);
-        }
-
-        .modal-content h2, .modal-content h3 {
-            margin-bottom: 20px;
-            color: var(--text-main);
-            letter-spacing: -0.01em;
-            text-shadow: var(--text-glow-light);
-        }
-
         .form-group {
-            margin-bottom: 18px;
+            margin-bottom: 14px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 6px;
-            font-size: 0.85rem;
+            margin-bottom: 4px;
+            font-size: 0.75rem;
             font-weight: 600;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.05em;
         }
 
         .form-group input, .form-group textarea, .form-group select {
             width: 100%;
-            padding: 12px 16px;
-            border-radius: 12px;
+            padding: 10px 14px;
+            border-radius: 10px;
             border: 1px solid var(--border-color);
             background: var(--input-bg);
             color: var(--text-main);
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-group input:focus, .form-group textarea:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+            font-size: 0.9rem;
         }
 
         .modal-actions {
             display: flex;
             justify-content: flex-end;
-            gap: 12px;
-            margin-top: 25px;
+            gap: 10px;
+            margin-top: 20px;
             flex-wrap: wrap;
         }
 
         .btn {
-            padding: 12px 22px;
-            border-radius: 12px;
+            padding: 10px 16px;
+            border-radius: 10px;
             border: none;
             cursor: pointer;
             font-weight: 600;
-            font-size: 0.92rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            font-size: 0.85rem;
         }
 
         .btn-primary { background: #2563eb; color: white; }
-        .btn-primary:hover { background: #1d4ed8; }
         .btn-danger { background: #dc2626; color: white; }
-        .btn-danger:hover { background: #b91c1c; }
         .btn-secondary { background: #475569; color: white; }
-        .btn-secondary:hover { background: #334155; }
         .btn-success { background: #10b981; color: white; }
-        .btn-success:hover { background: #059669; }
 
         .close-modal {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 15px;
+            right: 15px;
             background: var(--input-bg);
             border: 1px solid var(--border-color);
-            width: 36px; height: 36px;
+            width: 30px; height: 30px;
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1rem;
             cursor: pointer;
             color: var(--text-muted);
-            transition: all 0.2s;
-        }
-
-        .close-modal:hover {
-            background: #dc2626;
-            color: white;
-            border-color: #dc2626;
-            transform: rotate(90deg);
         }
 
         .manage-list {
-            margin-top: 25px;
+            margin-top: 20px;
             border-top: 1px solid var(--border-color);
-            padding-top: 20px;
+            padding-top: 15px;
         }
 
         .admin-category-group {
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             background: var(--bg-color);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
+            border-radius: 10px;
             overflow: hidden;
         }
 
         .admin-category-header {
             background: var(--input-bg);
-            padding: 10px 14px;
-            font-size: 0.9rem;
+            padding: 8px 12px;
+            font-size: 0.82rem;
             font-weight: 700;
             color: var(--text-main);
             border-bottom: 1px solid var(--border-color);
         }
 
         .admin-category-items {
-            padding: 10px;
+            padding: 8px;
         }
 
         .manage-item {
@@ -498,30 +484,11 @@
             justify-content: space-between;
             align-items: center;
             background: var(--card-bg);
-            padding: 10px 14px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            font-size: 0.88rem;
+            padding: 8px 10px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            font-size: 0.8rem;
             border: 1px solid var(--border-color);
-            transition: all 0.2s;
-        }
-
-        .manage-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .manage-item:hover {
-            border-color: #2563eb;
-        }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -530,10 +497,15 @@
     <header>
         <div class="top-actions">
             <button class="icon-btn" onclick="toggleTheme()">🌓 Tema</button>
-            <button class="icon-btn" onclick="openAdminModal()">⚙️ Admin / Gerenciar</button>
+            <button class="icon-btn" onclick="openAdminModal()">⚙️ Admin</button>
         </div>
         <h1>Flashcards MED</h1>
         <p>Revisão Interativa de Cirurgia Cardíaca</p>
+        
+        <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="search-input" class="search-input" placeholder="Pesquisar perguntas ou respostas..." oninput="filterCards()">
+        </div>
     </header>
 
     <nav class="sticky-nav" id="nav-menu"></nav>
@@ -545,11 +517,11 @@
             <button class="close-modal" onclick="closeAdminModal()">✕</button>
             <h2>Painel de Gerenciamento</h2>
             
-            <div style="background: var(--input-bg); padding: 15px; border-radius: 14px; border: 1px solid var(--border-color); margin-bottom: 25px;">
-                <label style="display: block; margin-bottom: 10px; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">Arquivo Local (JSON)</label>
-                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <button class="btn btn-success" style="flex: 1;" onclick="exportJSON()">📥 Exportar JSON</button>
-                    <button class="btn btn-secondary" style="flex: 1;" onclick="document.getElementById('import-file').click()">📤 Importar JSON</button>
+            <div style="background: var(--input-bg); padding: 12px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">Arquivo Local (JSON)</label>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button class="btn btn-success" style="flex: 1;" onclick="exportJSON()">📥 Exportar</button>
+                    <button class="btn btn-secondary" style="flex: 1;" onclick="document.getElementById('import-file').click()">📤 Importar</button>
                     <input type="file" id="import-file" accept=".json" style="display: none;" onchange="importJSON(event)">
                 </div>
             </div>
@@ -559,13 +531,13 @@
                 <input type="text" id="gist-id" placeholder="Cole o ID do seu Gist aqui">
             </div>
             <div class="form-group">
-                <label>GitHub Token (Personal Access Token)</label>
+                <label>GitHub Token</label>
                 <input type="password" id="gist-token" placeholder="ghp_xxxxxxxxxxxx">
             </div>
 
-            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 25px 0;">
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 20px 0;">
 
-            <h3 id="form-title-heading">Adicionar ou Atualizar Cartão</h3>
+            <h3 id="form-title-heading" style="font-size: 1.1rem; margin-bottom: 12px;">Adicionar ou Atualizar Cartão</h3>
             <input type="hidden" id="edit-original-cat" value="">
             <input type="hidden" id="edit-original-index" value="">
 
@@ -583,13 +555,13 @@
             </div>
 
             <div class="modal-actions">
-                <button class="btn btn-secondary" onclick="clearForm()">Limpar / Cancelar</button>
+                <button class="btn btn-secondary" onclick="clearForm()">Cancelar</button>
                 <button class="btn btn-primary" onclick="saveCard()">Salvar Cartão</button>
             </div>
 
             <div class="manage-list">
-                <h3>Cartões Existentes (Agrupados)</h3>
-                <div id="existing-cards-list" style="max-height: 280px; overflow-y: auto; margin-top: 10px;"></div>
+                <h3 style="font-size: 1rem;">Cartões Existentes</h3>
+                <div id="existing-cards-list" style="max-height: 220px; overflow-y: auto; margin-top: 8px;"></div>
             </div>
         </div>
     </div>
@@ -686,6 +658,19 @@
             document.documentElement.setAttribute('data-theme', 'dark');
         }
 
+        let lastScrollTop = 0;
+        const navMenuEl = document.getElementById('nav-menu');
+        
+        window.addEventListener('scroll', () => {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > lastScrollTop && scrollTop > 100) {
+                navMenuEl.classList.add('hidden');
+            } else {
+                navMenuEl.classList.remove('hidden');
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+        });
+
         function openAdminModal() { 
             renderManageList();
             document.getElementById('admin-modal').classList.add('active'); 
@@ -723,7 +708,7 @@
                         renderManageList();
                         alert("Flashcards importados com sucesso!");
                     } catch (error) {
-                        alert("Erro ao ler o arquivo JSON. Certifique-se de que o formato é válido.");
+                        alert("Erro ao ler o arquivo JSON.");
                     }
                 };
             }
@@ -764,6 +749,8 @@
                 cartoes.forEach((cartao, index) => {
                     const cardEl = document.createElement('div');
                     cardEl.className = 'card';
+                    cardEl.setAttribute('data-question', cartao.q.toLowerCase());
+                    cardEl.setAttribute('data-answer', cartao.a.toLowerCase());
                     
                     cardEl.onclick = (e) => {
                         if (!e.target.closest('.card-options-container')) {
@@ -806,6 +793,32 @@
             document.querySelectorAll('.category-section').forEach(sec => observer.observe(sec));
         }
 
+        function filterCards() {
+            const rawQuery = document.getElementById('search-input').value;
+            const query = rawQuery.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+            const sections = document.querySelectorAll('.category-section');
+
+            sections.forEach(section => {
+                let hasVisibleCard = false;
+                const cards = section.querySelectorAll('.card');
+
+                cards.forEach(card => {
+                    const rawQ = card.getAttribute('data-question');
+                    const qText = rawQ.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+                    // Filtra exclusivamente pelo texto da pergunta
+                    if (qText.includes(query)) {
+                        card.style.display = 'block';
+                        hasVisibleCard = true;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                section.style.display = hasVisibleCard ? 'block' : 'none';
+            });
+        }
+
         function toggleCardMenu(event, cat, index) {
             event.stopPropagation();
             document.querySelectorAll('.dropdown-menu').forEach(menu => {
@@ -846,10 +859,10 @@
                     const item = document.createElement('div');
                     item.className = 'manage-item';
                     item.innerHTML = `
-                        <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 320px;" title="${cartao.q}">${cartao.q}</span>
-                        <div style="display: flex; gap: 6px; flex-shrink: 0;">
-                            <button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.75rem;" onclick="editCard('${cat}', ${index})">Editar</button>
-                            <button class="btn btn-danger" style="padding: 5px 10px; font-size: 0.75rem;" onclick="deleteCard('${cat}', ${index})">Excluir</button>
+                        <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px;" title="${cartao.q}">${cartao.q}</span>
+                        <div style="display: flex; gap: 4px; flex-shrink: 0;">
+                            <button class="btn btn-secondary" style="padding: 3px 6px; font-size: 0.7rem;" onclick="editCard('${cat}', ${index})">Editar</button>
+                            <button class="btn btn-danger" style="padding: 3px 6px; font-size: 0.7rem;" onclick="deleteCard('${cat}', ${index})">Excluir</button>
                         </div>
                     `;
                     itemsDiv.appendChild(item);
@@ -868,10 +881,7 @@
             
             document.getElementById('edit-original-cat').value = cat;
             document.getElementById('edit-original-index').value = index;
-            document.getElementById('form-title-heading').textContent = 'Editando Cartão Existente';
-            
-            const modalContent = document.querySelector('.modal-content');
-            if (modalContent) modalContent.scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById('form-title-heading').textContent = 'Editando Cartão';
         }
 
         function deleteCard(cat, index) {
