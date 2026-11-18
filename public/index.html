@@ -4,12 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0b1020">
+<meta name="vetly-build" content="auth-fix-2">
 <meta name="description" content="Seu espaço de estudos em Medicina Veterinária: transforme resumos em flashcards e revise com inteligência.">
 <title>Vetly Studio — Flashcards inteligentes</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./assets/style.css">
+<link rel="stylesheet" href="./assets/style.css?v=auth-fix-2">
 </head>
 <body>
 <div class="scroll-line" id="scroll-line"></div><div class="ambient one"></div><div class="ambient two"></div>
@@ -62,6 +63,6 @@ A Física
 <div class="modal-backdrop" id="edit-modal" role="dialog" aria-modal="true" aria-labelledby="edit-title" aria-hidden="true"><div class="modal-card"><div class="modal-top"><h2 id="edit-title">Novo flashcard ✦</h2><button class="modal-close" data-close="edit-modal" aria-label="Fechar">×</button></div><form id="card-form" class="modal-grid"><div><label class="field-label" for="edit-category">Disciplina</label><input id="edit-category" class="field-input" list="known-categories" maxlength="70" placeholder="Ex.: Anatomia" required><datalist id="known-categories"></datalist></div><div><label class="field-label" for="edit-question">Pergunta (frente)</label><textarea id="edit-question" class="field-textarea" style="min-height:80px" maxlength="500" placeholder="O que é...?" required></textarea></div><div><label class="field-label" for="edit-answer">Resposta (verso)</label><textarea id="edit-answer" class="field-textarea" style="min-height:115px" maxlength="3000" placeholder="A resposta aparecerá quando o cartão for virado." required></textarea></div><div class="modal-actions"><button type="button" class="btn" data-close="edit-modal">Cancelar</button><button class="btn btn-primary" type="submit">Salvar cartão</button></div></form></div></div>
 <div class="modal-backdrop" id="study-modal" role="dialog" aria-modal="true" aria-labelledby="study-title" aria-hidden="true"><div class="modal-card study-dialog"><div class="modal-top"><h2 id="study-title">Modo estudo ◎</h2><button class="modal-close" data-close="study-modal" aria-label="Fechar">×</button></div><div id="study-stage"><div class="study-topline"><span id="study-count">1 de 56</span><span id="study-score">0 acertos</span></div><div class="study-progress"><span id="study-bar"></span></div><div class="study-cat" id="study-category"></div><div class="study-main" id="study-main" role="button" tabindex="0" aria-label="Virar cartão"><h3 id="study-prompt"></h3><p id="study-response" hidden></p></div><div class="study-hint" id="study-hint">Clique no cartão (ou espaço) para revelar a resposta.</div><div class="study-buttons" id="study-buttons"><button class="btn btn-primary" id="study-reveal">Ver resposta ↻</button><button class="btn btn-danger" id="study-again" hidden>↺ Preciso rever</button><button class="btn btn-primary" id="study-yes" hidden>✓ Acertei</button></div></div><div class="study-complete" id="study-complete" hidden><div style="font-size:53px">🎉</div><h3>Boa revisão!</h3><p id="study-summary"></p><button class="btn btn-primary" id="study-restart">Estudar novamente ↻</button></div></div></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<script defer src="./assets/app.js"></script>
+<script defer src="./assets/app.js?v=auth-fix-2"></script>
 </body>
 </html>
