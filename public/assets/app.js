@@ -179,7 +179,7 @@ const ariaMotionReduced=window.matchMedia('(prefers-reduced-motion: reduce)');
 const ariaCardsObserver=('IntersectionObserver' in window)&&!ariaMotionReduced.matches
  ? new IntersectionObserver(entries=>{for(const entry of entries){if(entry.isIntersecting){entry.target.classList.add('aria-visible');ariaCardsObserver.unobserve(entry.target);}}},{threshold:.07,rootMargin:'0px 0px 55px 0px'}) : null;
 function ariaObserveCards(holder){
-  $('.flashcard-wrap',holder).forEach((el,i)=>{
+  $$('.flashcard-wrap',holder).forEach((el,i)=>{
    el.style.setProperty('--card-order',String(i%5));
    if(ariaCardsObserver)ariaCardsObserver.observe(el);
    else el.classList.add('aria-visible');
