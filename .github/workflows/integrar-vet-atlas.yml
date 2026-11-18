@@ -1,0 +1,103 @@
+name: Integrar Vet Atlas completo ao Aria World
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/integrar-vet-atlas.yml"
+      - "atlas-integration/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: vet-atlas-integration-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  compile-atlas:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout Aria World
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Configure pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10.29.1"
+      - name: Configure Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Compilar o Atlas completo
+        shell: bash
+        run: bash atlas-integration/build.sh
+      - name: Copiar arquivos compilados para artefato de implantação
+        run: |
+          mkdir -p ./atlas-build
+          cp -a "${RUNNER_TEMP}/aria-vet-atlas/out/." ./atlas-build/
+      - name: Enviar artefato validado
+        uses: actions/upload-artifact@v4
+        with:
+          name: vet-atlas-full-static
+          path: atlas-build/
+          if-no-files-found: error
+          retention-days: 3
+
+  integrate-aria:
+    needs: compile-atlas
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Aria World atual
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+          persist-credentials: true
+      - name: Baixar artefato validado
+        uses: actions/download-artifact@v4
+        with:
+          name: vet-atlas-full-static
+          path: atlas-build/
+      - name: Confirmar integridade sem executar código de terceiros
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test -s atlas-build/index.html
+          for species in dog cat cow horse; do
+            for system in skeletal muscular visceral integumentary; do
+              test -s "atlas-build/models/$species/$system.glb"
+            done
+          done
+          test -d atlas-build/_next
+          test -s atlas-build/LICENSE.txt
+          test -s atlas-build/LICENSE-CONTENT.md
+          test -s atlas-build/SOURCES.json
+      - name: Incorporar rota /atlas/ e adicionar links ao Aria World
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          mkdir -p public/atlas
+          cp -a atlas-build/. public/atlas/
+          python3 atlas-integration/link-home.py
+      - name: Commit da integração, sem alterar o backend ou armazenamento
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A public/atlas public/index.html
+          if git diff --cached --quiet; then
+            echo "Atlas já está atualizado."
+            exit 0
+          fi
+          git commit -m "feat: publicar Vet Atlas completo dentro de /atlas [skip ci]"
+          git push origin HEAD:main
