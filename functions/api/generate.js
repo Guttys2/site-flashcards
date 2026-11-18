@@ -50,7 +50,7 @@ async function upstreamFailure(response){
  const type=typeof details.type==='string'?details.type:'';
  const allowedCode=/^[a-z0-9_]{1,80}$/.test(code)?code:'unknown';
  const retryRaw=response.headers.get('retry-after')||'';
- const retrySeconds=/^\\d{1,4}$/.test(retryRaw)?Math.min(3600,Number(retryRaw)):null;
+ const retrySeconds=/^\d{1,4}$/.test(retryRaw)?Math.min(3600,Number(retryRaw)):null;
  const retryNote=retrySeconds!==null?' Aguarde pelo menos '+retrySeconds+' segundo(s).':' Aguarde um pouco antes de tentar novamente.';
  let message;
  if(response.status===429){
