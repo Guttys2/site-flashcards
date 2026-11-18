@@ -1,0 +1,41 @@
+/* Aria World x Vet Atlas — apenas apresentação; geometrias e metadados intactos.
+   Referências / licença do conteúdo preservadas do repositório original. */
+:root{
+  --background:#171119;--foreground:#fff3ef;--ink:#fff3ef;--rule:#674f62;
+  --mark:#f3b3be;--card:#261e2c;--card-foreground:#fff3ef;
+  --popover:#2b2130;--popover-foreground:#fff3ef;
+  --primary:#f7c6c9;--primary-foreground:#321f31;
+  --secondary:#382b3c;--secondary-foreground:#ffefeb;
+  --muted:#382b3c;--muted-foreground:#cdb8cb;
+  --accent:#533950;--accent-foreground:#ffe7e5;
+  --destructive:#ed97aa;--border:#6a5166;--input:#6a5166;--ring:#f3b3be;
+  --chart-1:#f3b3be;--chart-2:#c7a2dd;--chart-3:#f0cdab;--chart-4:#8dbfae;--chart-5:#a9aedb;
+  --sidebar:#241c2a;--sidebar-foreground:#fff3ef;
+  --sidebar-primary:#f7c6c9;--sidebar-primary-foreground:#321f31;
+  --sidebar-accent:#533950;--sidebar-accent-foreground:#ffe7e5;
+  --sidebar-border:#674f62;--sidebar-ring:#f3b3be;
+  --eosin:#e895ad;--eosin-soft:#513247;--viewer-bg:#211927;
+  --radius:.65rem;
+}
+@media (prefers-color-scheme:light){
+  :root{
+    --background:#fdf6f1;--foreground:#362536;--ink:#362536;--rule:#dcc4d0;
+    --mark:#a34c6b;--card:#fffdf9;--card-foreground:#362536;
+    --popover:#fffaf6;--popover-foreground:#362536;
+    --primary:#583650;--primary-foreground:#fff6f1;
+    --secondary:#f2e3e9;--secondary-foreground:#362536;
+    --muted:#f2e3e9;--muted-foreground:#745e71;
+    --accent:#f0d1dc;--accent-foreground:#4b2a46;
+    --destructive:#ac4763;--border:#dfc6d2;--input:#dfc6d2;--ring:#aa597b;
+    --chart-1:#a34c6b;--chart-2:#8063a3;--chart-3:#b87b50;--chart-4:#568d83;--chart-5:#687aa3;
+    --sidebar:#fcf0ec;--sidebar-foreground:#362536;
+    --sidebar-primary:#583650;--sidebar-primary-foreground:#fff6f1;
+    --sidebar-accent:#f0d1dc;--sidebar-accent-foreground:#4b2a46;
+    --sidebar-border:#dfc6d2;--sidebar-ring:#aa597b;
+    --eosin:#ac4763;--eosin-soft:#f5e1e8;--viewer-bg:#f4e7e8;
+  }
+}
+body{background-color:var(--background)}
+button,[role="button"],a{transition:color .18s ease,background-color .18s ease,border-color .18s ease}
+::selection{background:#a95377;color:#fff}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important}}
