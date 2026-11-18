@@ -125,8 +125,16 @@ function renderResearch(row,card){const el=$('.reference-result',row);el.replace
  const q=encodeURIComponent(card.research.term);buildLink(el,'Buscar no PubMed',`https://pubmed.ncbi.nlm.nih.gov/?term=${q}`);
  buildLink(el,'Buscar no Google Acadêmico',`https://scholar.google.com/scholar?q=${q}`);
 }
-async function generateWithAI(topic,content,withWeb=true){const accessKey=$('#ai-access-key').value.trim();if(!accessKey)throw Error('Informe seu código pessoal de acesso à IA.');const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),70000);
- try{const response=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+accessKey},body:JSON.stringify({topic,text:content,verify:withWeb}),signal:controller.signal});let payload;try{payload=await response.json()}catch(e){throw Error('O servidor não retornou JSON.')};if(!response.ok)throw Error(payload.error||'Erro ao processar com IA');if(!Array.isArray(payload.cards))throw Error('Formato inválido do serviço de IA');return payload}finally{clearTimeout(timer)}
+// Codifica a senha como UTF-8/Base64URL para permitir símbolos e acentos em um cabeçalho HTTP.
+function vetlyEncodedAccess(value){
+ if(value.length<32||value.length>256)throw Error('O código pessoal precisa ter de 32 a 256 caracteres. Confira o código cadastrado na Cloudflare.');
+ const bytes=new TextEncoder().encode(value);
+ if(bytes.length>768)throw Error('O código pessoal é muito longo.');
+ let binary='';for(const byte of bytes)binary+=String.fromCharCode(byte);
+ return 'vt2.'+btoa(binary).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+async function generateWithAI(topic,content,withWeb=true){const accessKey=$('#ai-access-key').value.trim();if(!accessKey)throw Error('Informe seu código pessoal de acesso à IA.');const encodedAccess=vetlyEncodedAccess(accessKey);const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),70000);
+ try{const response=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+encodedAccess},body:JSON.stringify({topic,text:content,verify:withWeb}),signal:controller.signal});let payload;try{payload=await response.json()}catch(e){throw Error('O servidor não retornou JSON.')};if(!response.ok)throw Error(payload.error||'Erro ao processar com IA');if(!Array.isArray(payload.cards))throw Error('Formato inválido do serviço de IA');return payload}finally{clearTimeout(timer)}
 }
 $('#generate-button').onclick=async()=>{
  const content=$('#summary-text').value.trim(),cat=$('#summary-topic').value.trim();if(content.length<20){toast('Escreva um resumo com pelo menos 20 caracteres.');$('#summary-text').focus();return}if(!cat){toast('Informe a disciplina ou assunto.');$('#summary-topic').focus();return}
