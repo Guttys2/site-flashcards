@@ -1,0 +1,7 @@
+:HL["/atlas/_next/static/chunks/3l_57a_jybn9_.css","style"]
+:HL["/atlas/_next/static/media/0f44b6394d723b98-s.p.24ir78z669k58.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/atlas/_next/static/media/2d85136c4a70e605-s.p.1sk091212cwhe.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/atlas/_next/static/media/31a9145ccb84606d-s.p.3j3x29wbycqkn.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/atlas/_next/static/media/37afeb4e0885cb1d-s.p.34pxs3l5kt36m.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/atlas/_next/static/media/efd23c95a9595abc-s.p.17bkc83it2-u9.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+0:{"tree":{"name":"","param":null,"prefetchHints":4112,"slots":{"children":{"name":"locale","param":{"type":"d","key":"en","siblings":[]},"prefetchHints":4096,"slots":{"children":{"name":"3d","param":null,"prefetchHints":4160,"slots":{"children":{"name":"species","param":{"type":"d","key":"cow","siblings":[]},"prefetchHints":4192,"slots":{"children":{"name":"system","param":{"type":"d","key":"muscular","siblings":[]},"prefetchHints":4192,"slots":{"children":{"name":"structure","param":{"type":"d","key":"sartorius","siblings":[]},"prefetchHints":4192,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}}}}}}}}}},"staleTime":300,"buildId":"iVk1lmKWbvFNiQwto5p9x"}

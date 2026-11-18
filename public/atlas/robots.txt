@@ -1,0 +1,4 @@
+User-Agent: *
+Allow: /
+
+Sitemap: https://ariaverso.pages.dev/atlas/sitemap.xml

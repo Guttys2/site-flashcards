@@ -1,0 +1,5 @@
+Vet Atlas upstream: https://github.com/Ketbome/vet-atlas
+Revision: 424cfcc9a559da87847575bbfb5c0e780847d25f
+Code: MIT. Written content: CC BY-SA 4.0.
+Individual assets: consult SOURCES.json and in-page attribution.
+These anatomical models are for study, not diagnostic use.
