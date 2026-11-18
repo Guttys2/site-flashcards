@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b1020">
+<meta name="description" content="Seu espaço de estudos em Medicina Veterinária: transforme resumos em flashcards e revise com inteligência.">
+<title>Vetly Studio — Flashcards inteligentes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./assets/style.css">
+</head>
+<body>
+<div class="scroll-line" id="scroll-line"></div><div class="ambient one"></div><div class="ambient two"></div>
+<div class="layout">
+<aside class="sidebar">
+ <a href="#inicio" class="brand" aria-label="Vetly, voltar ao início"><span class="brand-icon">V</span><span class="brand-name">vetly<span class="brand-dot">.</span></span></a>
+ <div><div class="side-title">Seu espaço</div><nav class="side-nav" aria-label="Navegação principal">
+ <a class="side-link active" href="#inicio"><span class="ico">⌂</span> Visão geral</a>
+ <a class="side-link" href="#criar"><span class="ico">✦</span> Criar com resumo</a>
+ <a class="side-link" href="#biblioteca"><span class="ico">▤</span> Meus flashcards</a>
+ <button class="side-link" id="study-nav" style="border:0;width:100%;text-align:left;background:transparent"><span class="ico">◎</span> Modo estudo</button>
+ </nav></div>
+ <div class="side-bottom"><div class="goal-card"><div class="goal-icon">🌱</div><strong>Um passo por vez.</strong><p>Revisar um pouco todos os dias faz a diferença.</p><div class="meter"><span id="side-progress"></span></div><p style="margin:9px 0 0" id="side-progress-label">Comece sua revisão!</p></div><div class="side-foot">FEITO PARA APRENDER ✳</div></div>
+</aside>
+<div class="content">
+<header class="topbar"><div><div class="mobile-brand brand"><span class="brand-icon">V</span><span class="brand-name">vetly<span class="brand-dot">.</span></span></div><p class="topbar-kicker">Meu espaço de estudos <span style="color:var(--cyan)">✳</span></p><p class="topbar-sub">Continue de onde parou. Seu futuro agradece!</p></div><div class="top-actions"><input id="json-file" class="hidden-input" type="file" accept="application/json,.json"><button class="btn top-utility" id="import-button"><span class="utility-icon">↥</span><span class="utility-text">Importar</span></button><button class="btn top-utility" id="export-button"><span class="utility-icon">↧</span><span class="utility-text">Exportar</span></button><button class="icon-button" id="theme-button" title="Alternar tema" aria-label="Alternar tema">☾</button><button class="btn btn-primary" id="add-button">＋ <span class="desktop-only">Novo cartão</span><span class="mobile-brand">Criar</span></button></div></header>
+<main id="inicio">
+<section class="hero" data-reveal>
+ <div class="hero-text"><div class="eyebrow"><span class="pulse"></span> SEU CONHECIMENTO, ORGANIZADO</div><h1>O que você aprende hoje, <em>fica pra sempre.</em></h1><p>Transforme seus resumos em perguntas, vire os cartões e faça cada revisão contar. Seu estúdio de estudo: da anotação à revisão, com referências e controle de qualidade.</p><div class="hero-buttons"><a href="#criar" class="btn btn-primary">✦ Criar flashcards</a><button class="btn hero-secondary" id="hero-study">▷ Começar a estudar</button></div></div>
+ <div class="hero-art" aria-hidden="true"><div class="decor-orbit"></div><div class="sample-card"><div class="sample-label">VETLY / FLASHCARD 01</div><h3>O que é pré-carga?</h3><div class="sample-foot"><span>HEMODINÂMICA</span><span>↻ VIRE PARA REVELAR</span></div></div><div class="sample-bubble">✦</div><div class="sample-star">✳</div></div>
+</section>
+<section class="stats" aria-label="Resumo de aprendizagem" data-reveal><div class="stat"><div class="stat-ico">🗂️</div><div><div class="stat-number" id="stat-cards">56</div><div class="stat-name">Flashcards criados</div></div></div><div class="stat"><div class="stat-ico">🎓</div><div><div class="stat-number" id="stat-topics">8</div><div class="stat-name">Categorias de estudo</div></div></div><div class="stat"><div class="stat-ico">✨</div><div><div class="stat-number" id="stat-reviewed">0</div><div class="stat-name">Respostas acertadas</div></div></div></section>
+<section id="criar" class="section" data-reveal><div class="section-heading"><div><div class="section-kicker">Do conteúdo à memória</div><h2>Seu resumo faz sentido. <span style="color:var(--violet)">Linha por linha, junto.</span></h2><p>Juntamos linhas que se completam, buscamos referências e você aprova cada resposta antes de estudar.</p></div></div>
+ <div class="creator"><div class="editor"><div class="panel-head"><strong>✎ Seu resumo</strong><span class="small-tag">01 · ESCREVER</span></div><label class="field-label" for="summary-topic">Disciplina / assunto</label><input id="summary-topic" class="field-input" maxlength="70" placeholder="Ex.: Farmacologia Veterinária" value="" style="margin-bottom:15px"><label class="field-label" for="summary-text">Cole ou escreva o que aprendeu</label><textarea id="summary-text" class="field-textarea" placeholder="Exemplo:
+A Matemática
+é a ciência do raciocínio lógico e abstrato, que estuda quantidades, medidas e padrões.
+
+A Física
+é a ciência que investiga a matéria, a energia e suas interações."></textarea>
+<div class="mode-switch" role="group" aria-label="Modo de geração"><button type="button" class="mode-choice active" id="mode-local" aria-pressed="true"><span>✦</span> Inteligência local</button><button type="button" class="mode-choice" id="mode-ai" aria-pressed="false"><span>✧</span> IA com pesquisa</button></div>
+<div id="ai-hint" class="ai-hint" hidden>
+<strong>IA com acesso privado (duas pessoas)</strong>
+<p style="margin:6px 0 11px">Seu resumo será enviado à OpenAI somente ao clicar em gerar. A chave da API fica protegida na Cloudflare, nunca nesta página.</p>
+<label class="field-label" for="ai-access-key">Código pessoal de acesso</label>
+<input type="password" class="field-input" id="ai-access-key" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Cole seu código privado" style="margin:6px 0 10px">
+<label class="ai-research-option"><input id="ai-with-web" type="checkbox" checked> Pesquisar referências na internet</label>
+<small class="tiny-note" style="display:block;margin-top:9px">Não coloque aqui a chave da OpenAI. O código pessoal não é armazenado pelo site.</small>
+<a href="#como-funciona">Como funciona a proteção</a></div>
+<div class="creator-footer"><small class="tiny-note" id="generator-note">✳ O modo local não envia seu resumo para um servidor. A pesquisa de referências só ocorre ao clicar em pesquisar.</small><button id="generate-button" class="btn btn-primary">✦ Gerar perguntas</button></div></div>
+ <div class="preview"><div class="panel-head"><strong>▣ Prévia dos cartões</strong><span class="small-tag purple">02 · REVISAR</span></div><div id="preview-empty" class="preview-empty"><div class="empty-orb">✦</div><strong>Suas perguntas aparecem aqui</strong><p>Quanto mais claro e organizado estiver o resumo, melhores serão os cartões gerados.</p></div><div class="review-info" id="review-info" hidden><span class="review-orb">◎</span><div><strong>Revisão antes de memorizar</strong><p>Referências ajudam a investigar, mas não garantem a exatidão. Confira cada resposta e marque como revisada.</p></div></div>
+<div id="global-sources" class="global-sources" hidden></div><div id="preview-list" class="preview-list" hidden></div><div id="preview-save" class="preview-save" hidden><small id="preview-count">0 cartões</small><button id="save-generated" class="btn btn-primary">✓ Salvar revisados</button></div></div></div>
+</section>
+<section class="help-strip" id="como-funciona" data-reveal><div class="help-glow"></div><div><span class="help-eyebrow">CONTEÚDO CONFIÁVEL</span><h3>Seu conhecimento merece cuidado.</h3><p>O modo local respeita o texto original. O botão <strong>Pesquisar referências</strong> consulta a Wikipédia e oferece pesquisa no PubMed; os resultados são pistas para conferência, não validação automática. No modo IA, o servidor privado na Cloudflare usa a OpenAI. A pesquisa traz referências para conferir, mas você continua aprovando as respostas antes de salvar.</p></div><div class="help-mark">◎</div></section>
+<section id="biblioteca" class="section"><div class="section-heading" data-reveal><div><div class="section-kicker">Sua biblioteca</div><h2>Pequenos cartões. <span style="color:var(--cyan)">Grandes descobertas.</span></h2><p>Explore suas matérias, teste sua memória e estude do seu jeito.</p></div><button class="btn btn-soft" id="library-study">▷ Revisar agora</button></div>
+<div class="library-bar"><div class="search"><span>⌕</span><input id="search-input" type="search" placeholder="Buscar perguntas, respostas ou assuntos..." aria-label="Pesquisar flashcards"></div><button class="btn" id="random-button">⤨ Embaralhar</button></div><div id="filters" class="filter-pills" aria-label="Filtrar categorias"></div><div id="library-meta" class="library-meta"></div><div id="cards" class="cards"></div>
+</section>
+</main>
+<footer class="footer"><span>Vetly Studio ✳ design experimental de estudos.</span><span>Seu progresso fica salvo neste navegador. © 2026</span></footer>
+</div></div>
+<div class="modal-backdrop" id="edit-modal" role="dialog" aria-modal="true" aria-labelledby="edit-title" aria-hidden="true"><div class="modal-card"><div class="modal-top"><h2 id="edit-title">Novo flashcard ✦</h2><button class="modal-close" data-close="edit-modal" aria-label="Fechar">×</button></div><form id="card-form" class="modal-grid"><div><label class="field-label" for="edit-category">Disciplina</label><input id="edit-category" class="field-input" list="known-categories" maxlength="70" placeholder="Ex.: Anatomia" required><datalist id="known-categories"></datalist></div><div><label class="field-label" for="edit-question">Pergunta (frente)</label><textarea id="edit-question" class="field-textarea" style="min-height:80px" maxlength="500" placeholder="O que é...?" required></textarea></div><div><label class="field-label" for="edit-answer">Resposta (verso)</label><textarea id="edit-answer" class="field-textarea" style="min-height:115px" maxlength="3000" placeholder="A resposta aparecerá quando o cartão for virado." required></textarea></div><div class="modal-actions"><button type="button" class="btn" data-close="edit-modal">Cancelar</button><button class="btn btn-primary" type="submit">Salvar cartão</button></div></form></div></div>
+<div class="modal-backdrop" id="study-modal" role="dialog" aria-modal="true" aria-labelledby="study-title" aria-hidden="true"><div class="modal-card study-dialog"><div class="modal-top"><h2 id="study-title">Modo estudo ◎</h2><button class="modal-close" data-close="study-modal" aria-label="Fechar">×</button></div><div id="study-stage"><div class="study-topline"><span id="study-count">1 de 56</span><span id="study-score">0 acertos</span></div><div class="study-progress"><span id="study-bar"></span></div><div class="study-cat" id="study-category"></div><div class="study-main" id="study-main" role="button" tabindex="0" aria-label="Virar cartão"><h3 id="study-prompt"></h3><p id="study-response" hidden></p></div><div class="study-hint" id="study-hint">Clique no cartão (ou espaço) para revelar a resposta.</div><div class="study-buttons" id="study-buttons"><button class="btn btn-primary" id="study-reveal">Ver resposta ↻</button><button class="btn btn-danger" id="study-again" hidden>↺ Preciso rever</button><button class="btn btn-primary" id="study-yes" hidden>✓ Acertei</button></div></div><div class="study-complete" id="study-complete" hidden><div style="font-size:53px">🎉</div><h3>Boa revisão!</h3><p id="study-summary"></p><button class="btn btn-primary" id="study-restart">Estudar novamente ↻</button></div></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script defer src="./assets/app.js"></script>
+</body>
+</html>
