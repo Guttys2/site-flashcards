@@ -12,7 +12,7 @@ O repositório original continua com `index.html`, `manifest.json`, `sw.js` e o 
    - `VETLY_ACCESS_TOKEN_1`: código privado para a pessoa 1
    - `VETLY_ACCESS_TOKEN_2`: código privado diferente para a pessoa 2
 5. Gere dois códigos aleatórios com pelo menos 32 caracteres de alta entropia (por exemplo, no Node.js: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` executado duas vezes). **Não os envie ao chat nem coloque no GitHub**.
-6. Reimplante o site depois de cadastrar os segredos. Acesse o endereço `https://NOME.pages.dev`, clique em **Criar flashcards → IA com pesquisa** e informe o seu código privado. A segunda pessoa usa o outro código.
+6. Reimplante o site depois de cadastrar os segredos. Os códigos podem conter símbolos e acentos, mas precisam ter **de 32 a 256 caracteres** e ser difíceis de adivinhar. Não use palavras comuns nem compartilhe uma chave entre usuários. Acesse o endereço `https://NOME.pages.dev`, clique em **Criar flashcards → IA com pesquisa** e informe o seu código privado. A segunda pessoa usa o outro código.
 7. Verifique gastos, alertas e limites do projeto OpenAI. A API é cobrada separadamente do ChatGPT; esta função não tem quota global de dinheiro ou requisições.
 
 ## Segurança, conteúdo e dados
@@ -40,3 +40,11 @@ README.md
 ```
 
 Para testar gratuitamente o visual, abra `public/index.html`. A IA só responderá após configurar os segredos e publicar na Cloudflare Pages.
+
+## Se aparecer "Código de acesso inválido"
+
+1. Cada código precisa ter entre **32 e 256 caracteres**, sem espaços extras no começo ou no fim.
+2. Confira se o valor cadastrado em `VETLY_ACCESS_TOKEN_1` ou `VETLY_ACCESS_TOKEN_2` é idêntico ao inserido no site. O nome da variável não é o código.
+3. Certifique-se de que as variáveis estão no ambiente **Production** do projeto **Pages** correto e faça um **novo deploy de produção** após alterar os Secrets.
+4. Abra o endereço `*.pages.dev` do novo site, não o antigo `*.github.io`, e atualize com Ctrl+F5 para limpar o cache.
+5. Se você não souber o valor do Secret, substitua-o por um novo código privado, em vez de compartilhar a chave com alguém para conferir.
