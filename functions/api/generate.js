@@ -77,10 +77,23 @@ export async function onRequest({request,env}){
  if(!env.OPENAI_API_KEY)return json({error:'Chave OpenAI ainda não configurada na Cloudflare.'},503);
  const tokens=[env.VETLY_ACCESS_TOKEN_1,env.VETLY_ACCESS_TOKEN_2].filter(x=>typeof x==='string'&&x.length>=32);
  if(!tokens.length)return json({error:'Códigos de acesso não configurados na Cloudflare.'},503);
- const match=/^Bearer ([A-Za-z0-9_-]{32,256})$/.exec(request.headers.get('Authorization')||'');
- if(!match)return json({error:'Código de acesso inválido.'},401);
- let allowed=false;for(const token of tokens){allowed=(await equalSecret(match[1],token))||allowed}
- if(!allowed)return json({error:'Código de acesso inválido.'},401);
+ const auth=request.headers.get('Authorization')||'';
+ let supplied=null;
+ const encoded=/^Bearer vt2\.([A-Za-z0-9_-]{40,1024})$/.exec(auth);
+ if(encoded){
+  try{
+   const b64=encoded[1].replace(/-/g,'+').replace(/_/g,'/');
+   const bytes=Uint8Array.from(atob(b64.padEnd(Math.ceil(b64.length/4)*4,'=')),c=>c.charCodeAt(0));
+   supplied=new TextDecoder('utf-8',{fatal:true}).decode(bytes);
+  }catch{supplied=null}
+ }else{
+  // Mantém compatibilidade com versões anteriores do navegador.
+  const legacy=/^Bearer ([A-Za-z0-9_-]{32,256})$/.exec(auth);
+  if(legacy)supplied=legacy[1];
+ }
+ if(!supplied||supplied.length<32||supplied.length>256)return json({error:'Código de acesso inválido. Confira o valor e o ambiente Production na Cloudflare.'},401);
+ let allowed=false;for(const token of tokens){allowed=(await equalSecret(supplied,token))||allowed}
+ if(!allowed)return json({error:'Código de acesso inválido. Confira se copiou exatamente o mesmo valor do Secret e fez um novo deploy.'},401);
  if(!(request.headers.get('Content-Type')||'').toLowerCase().startsWith('application/json'))return json({error:'Formato JSON obrigatório.'},415);
  if(Number(request.headers.get('Content-Length')||0)>MAX_BYTES)return json({error:'Resumo muito grande.'},413);
  let raw;try{raw=await request.text()}catch{return json({error:'Não foi possível ler o pedido.'},400)}
