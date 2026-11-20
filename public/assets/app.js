@@ -96,36 +96,114 @@ function buildPreview(){
  const root=$('#preview-list');root.replaceChildren();const has=previewCards.length>0;$('#preview-empty').hidden=has;root.hidden=!has;$('#review-info').hidden=!has;$('#preview-save').hidden=!has;showGlobalSources();if(!has)return;
  previewCards.forEach((card,i)=>{
   const row=document.createElement('div');row.className='preview-row';row.style.animationDelay=`${Math.min(i,6)*35}ms`;
-  row.innerHTML='<div class="preview-row-top"><span></span><button type="button" aria-label="Remover cartão">×</button></div><input aria-label="Editar pergunta"><textarea aria-label="Editar resposta" rows="2"></textarea><div class="preview-origin"></div><div class="preview-controls"><button class="research-button" type="button">⌕ Pesquisar referências</button><label class="review-check"><input type="checkbox"> Revisei esta resposta</label></div><div class="reference-result" hidden></div>';
+  row.innerHTML='<div class="preview-row-top"><span></span><button type="button" aria-label="Remover cartão">×</button></div><input aria-label="Editar pergunta"><textarea aria-label="Editar resposta" rows="2"></textarea><div class="preview-origin"></div><label class="research-label">Termos da pesquisa bibliográfica <input type="text" class="research-query" aria-label="Termos da pesquisa bibliográfica" maxlength="260"></label><div class="preview-controls"><button class="research-button" type="button">⌕ Pesquisar literatura</button><label class="review-check"><input type="checkbox"> Revisei esta resposta</label></div><div class="reference-result" hidden></div>';
   $('.preview-row-top span',row).textContent=`RASCUNHO ${String(i+1).padStart(2,'0')}`;
   const inp=$('input[aria-label="Editar pergunta"]',row),txt=$('textarea',row),origin=$('.preview-origin',row);inp.value=card.q;txt.value=card.a;origin.textContent='Texto-base: '+(card.origin||'Gerado com IA — confira relação com seu resumo e fontes.');
+  const researchQuery=$('.research-query',row);researchQuery.value=card.researchTerm||vetResearchFocus(card).term;researchQuery.oninput=e=>{card.researchTerm=e.target.value;card.research=null;card.sources=[]};
+  const fitAnswer=()=>{txt.style.height='auto';txt.style.height=Math.max(65,txt.scrollHeight+4)+'px'};txt.addEventListener('input',fitAnswer);
   inp.oninput=e=>{card.q=e.target.value;card.reviewed=false;card.sources=[];card.research=null;$('.review-check input',row).checked=false;updateReviewCount()};txt.oninput=e=>{card.a=e.target.value;card.reviewed=false;card.sources=[];card.research=null;$('.review-check input',row).checked=false;updateReviewCount()};
   $('.review-check input',row).checked=!!card.reviewed;$('.review-check input',row).onchange=e=>{card.reviewed=e.target.checked;updateReviewCount()};
   $('.preview-row-top button',row).onclick=()=>{previewCards.splice(i,1);buildPreview()};
   $('.research-button',row).onclick=()=>researchCard(card,row);
-  root.append(row);if(card.research)renderResearch(row,card)
+  root.append(row);fitAnswer();if(card.research)renderResearch(row,card)
  });updateReviewCount()
 }
 function updateReviewCount(){const n=previewCards.filter(c=>c.reviewed&&c.q.trim()&&c.a.trim()).length;$('#preview-count').textContent=`${n} de ${previewCards.length} revisados`;
  const save=$('#save-generated');save.disabled=n===0;save.title=n===0?'Confira e marque pelo menos um cartão.':'Somente os cartões marcados como revisados serão salvos.';}
-function researchTerm(card){const q=card.q.replace(/^O que (?:é|são)\s+/i,'').replace(/[?!.]/g,'').trim();return q.length>5&&q.length<85?q:card.origin?.split(/\s+/).slice(0,6).join(' ')||q}
-async function researchCard(card,row){const button=$('.research-button',row),target=$('.reference-result',row);button.disabled=true;button.textContent='⌛ Pesquisando...';target.hidden=false;target.textContent='Buscando um artigo para você confrontar com o conteúdo do resumo…';
- const term=researchTerm(card);
+
+/* Busca bibliográfica contextual: correspondência temática NÃO valida a resposta. */
+const vetResearchLexicon={
+ preload:{terms:['pré-carga','pre-carga','precarga','preload'],query:'(cardiac preload) AND (ventricular OR venous OR heart)',required:['preload'],context:['cardiac','ventricular','heart','venous','diastolic','hemodynamic','filling']},
+ afterload:{terms:['pós-carga','pos-carga','afterload'],query:'cardiac afterload AND (ventricular OR arterial)',required:['afterload'],context:['cardiac','heart','ventricular','arterial']},
+ cardioplegia:{terms:['cardioplegia'],query:'cardioplegia AND (cardiac OR myocardial)',required:['cardioplegia'],context:['cardiac','myocardial','surgery','heart']},
+ hypothermia:{terms:['hipotermia','hypothermia'],query:'hypothermia AND (veterinary OR surgery OR anesthesia)',required:['hypothermia'],context:['veterinary','surgery','animal','dog','cat','anesthesia']},
+ anticoagulation:{terms:['anticoagulação','anticoagulacao','anticoagulation'],query:'anticoagulation AND (veterinary OR extracorporeal OR cardiac)',required:['anticoagul'],context:['cardiac','blood','heparin','veterinary','extracorporeal']}
+};
+const vetStopWords=new Set('a o as os um uma e em de do da dos das na no para por com sem que qual quais como onde fatores afetar afetam causas principais resposta pergunta relação'.split(' '));
+function vetResearchFocus(card){
+ const topic=$('#summary-topic').value.trim();
+ const phrase=norm([topic,card.q,card.a,card.origin||''].join(' '));
+ for(const obj of Object.values(vetResearchLexicon))
+  if(obj.terms.some(t=>phrase.includes(norm(t))))return {...obj,topic,term:obj.query,kind:'biomed'};
+ const words=(topic+' '+card.q).replace(/[?!.:()]/g,' ').split(/\s+/).map(norm).filter(s=>s.length>3&&!vetStopWords.has(s)).slice(0,8);
+ return {topic,term:words.join(' '),required:words.slice(0,2),context:words.slice(2),kind:'general'};
+}
+function vetResearchTerm(card,focus){return String(card.researchTerm||focus.term||'').trim().slice(0,260)}
+function vetPlain(value){return String(value||'').replace(/<[^>]*>/g,' ').replace(/&(?:nbsp|amp|lt|gt|quot);/gi,' ').replace(/\s+/g,' ').trim()}
+function vetRelevance(record,focus){
+ const title=norm(record.title||''),abstract=norm(vetPlain(record.abstractText||'')),body=title+' '+abstract;
+ if(!title||body.length<38||!focus.required.length||!focus.required.some(t=>body.includes(norm(t))))return -1;
+ const context=focus.context.filter(t=>body.includes(norm(t))).length;
+ if(focus.kind==='biomed'&&!context)return -1;
+ return (focus.required.some(t=>title.includes(norm(t)))?2:0)+(focus.context.some(t=>title.includes(norm(t)))?2:0)+Math.min(3,context)+Math.min(2,focus.required.filter(t=>body.includes(norm(t))).length);
+}
+function vetResearchLinks(holder,term){
+ const area=document.createElement('div');area.className='research-external';
+ const label=document.createElement('strong');label.textContent='Continuar investigação nas bases científicas';area.append(label);
+ buildLink(area,'PubMed','https://pubmed.ncbi.nlm.nih.gov/?term='+encodeURIComponent(term));
+ buildLink(area,'Europe PMC','https://europepmc.org/search?query='+encodeURIComponent(term));
+ buildLink(area,'Manual Veterinário MSD','https://www.google.com/search?q='+encodeURIComponent('site:msdvetmanual.com '+term));
+ holder.append(area);
+}
+async function vetPrivateResearch(card,focus,term){
+ const key=$('#ai-access-key')?.value?.trim();
+ if(!key||location.protocol!=='https:')return null;
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),58000);
  try{
-  const params=new URLSearchParams({action:'query',generator:'search',gsrsearch:term,gsrlimit:'3',prop:'extracts|info',exintro:'1',explaintext:'1',exchars:'700',inprop:'url',format:'json',formatversion:'2',origin:'*'});
-  const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),10500);let response;try{response=await fetch('https://pt.wikipedia.org/w/api.php?'+params,{signal:controller.signal})}finally{clearTimeout(timer)}
-  if(!response.ok)throw Error('Serviço de pesquisa indisponível');const data=await response.json();const found=(data.query?.pages||[]).filter(x=>x.title&&x.fullurl).slice(0,3);
-  card.research={status:found.length?'references':'not-found',term,results:found.map(x=>({title:x.title,url:x.fullurl,extract:(x.extract||'').slice(0,650)}))};card.sources=found.map(x=>({title:x.title,url:x.fullurl}));
- }catch(e){card.research={status:'error',term,results:[]}}
- button.disabled=false;button.textContent='⌕ Pesquisar novamente';renderResearch(row,card)
+  const response=await fetch('/api/generate',{method:'POST',signal:controller.signal,headers:{
+   'Content-Type':'application/json','Authorization':'Bearer '+vetlyEncodedAccess(key)},
+   body:JSON.stringify({action:'research',topic:focus.topic||'Medicina Veterinária',question:card.q,answer:card.a,origin:(card.origin||'').slice(0,1200),searchTerm:term})
+  });
+  let jsonData;try{jsonData=await response.json()}catch{throw Error('Resposta de pesquisa inválida')}
+  if(!response.ok)throw Error(jsonData.error||'Pesquisa privada indisponível');
+  return jsonData;
+ }finally{clearTimeout(timer)}
 }
-function renderResearch(row,card){const el=$('.reference-result',row);el.replaceChildren();el.hidden=false;const heading=document.createElement('strong');heading.textContent=card.research.status==='references'?'Fontes para conferir (não é validação)':'Não foi possível obter um resultado automático';el.append(heading);
- if(card.research.status==='references'){for(const r of card.research.results){const div=document.createElement('div');const title=document.createElement('div');buildLink(title,r.title,r.url);div.append(title);if(r.extract){const p=document.createElement('p');p.textContent=r.extract;div.append(p)}el.append(div)}}
- else{const p=document.createElement('p');p.textContent=card.research.status==='error'?'Sem conexão ou serviço indisponível. Acesse diretamente uma fonte.':'Nenhum artigo relevante encontrado automaticamente. Pesquise em fontes confiáveis.';el.append(p)}
- const second=document.createElement('div');second.className='research-muted';second.textContent='Wikipedia é uma referência inicial, não substitui bibliografia técnica nem revisão por especialista.';el.append(second);
- const q=encodeURIComponent(card.research.term);buildLink(el,'Buscar no PubMed',`https://pubmed.ncbi.nlm.nih.gov/?term=${q}`);
- buildLink(el,'Buscar no Google Acadêmico',`https://scholar.google.com/scholar?q=${q}`);
+async function researchCard(card,row){
+ const button=$('.research-button',row),target=$('.reference-result',row);
+ const focus=vetResearchFocus(card),term=vetResearchTerm(card,focus);
+ card.researchTerm=term;
+ button.disabled=true;button.textContent='⌛ Pesquisando literatura…';target.hidden=false;target.textContent='Procurando fontes contextualizadas…';
+ let privateError='';
+ try{
+  let ai=null;
+  try{ai=await vetPrivateResearch(card,focus,term)}catch(e){privateError='Pesquisa assistida por IA indisponível. '}
+  if(ai){
+   const refs=(ai.results||[]).map(x=>({title:x.title,url:x.url,extract:x.supportedPoint||x.whyRelevant||'',journal:'Pesquisa assistida por IA'}));
+   card.research={status:refs.length?'references':'not-found',term,results:refs,note:(ai.note||'')+' Avaliação preliminar; consulte o artigo original.'};
+   card.sources=refs.map(x=>({title:x.title,url:x.url}));
+  }else if(focus.kind==='biomed'){
+   const params=new URLSearchParams({query:term||focus.term,format:'json',pageSize:'30',resultType:'core'});
+   const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),18000);
+   let response;try{response=await fetch('https://www.ebi.ac.uk/europepmc/webservices/rest/search?'+params,{signal:controller.signal,headers:{Accept:'application/json'}})}finally{clearTimeout(timer)}
+   if(!response.ok)throw Error('Europe PMC indisponível');
+   const data=await response.json();
+   const refs=(data.resultList?.result||[]).map(p=>({p,score:vetRelevance(p,focus)})).filter(x=>x.score>=3).sort((a,b)=>b.score-a.score).slice(0,8)
+    .map(({p})=>({title:vetPlain(p.title).slice(0,180),url:p.pmid?'https://pubmed.ncbi.nlm.nih.gov/'+encodeURIComponent(p.pmid)+'/':'https://europepmc.org/article/'+encodeURIComponent(p.source||'MED')+'/'+encodeURIComponent(p.id||''),extract:vetPlain(p.abstractText).slice(0,340),journal:String(p.journalTitle||'').slice(0,90),year:String(p.pubYear||'').slice(0,4)}));
+   card.research={status:refs.length?'references':'not-found',term,results:refs,note:privateError+'Resultados filtrados por conceitos clínicos. Leia o artigo antes de considerar a resposta correta.'};
+   card.sources=refs.map(x=>({title:x.title,url:x.url}));
+  }else{
+   card.research={status:'not-found',term,results:[],note:privateError+'Não há correspondência automática segura para este assunto. Utilize as bases externas.'};card.sources=[];
+  }
+ }catch(e){card.research={status:'error',term,results:[],note:privateError+'Busca indisponível. Utilize os links externos para continuar.'};card.sources=[]}
+ finally{button.disabled=false;button.textContent='⌕ Pesquisar novamente';renderResearch(row,card)}
 }
+function renderResearch(row,card){
+ const el=$('.reference-result',row);el.replaceChildren();el.hidden=false;
+ const result=card.research||{status:'not-found',results:[],note:''};
+ const details=document.createElement('details');details.className='research-details';details.open=true;
+ const summary=document.createElement('summary');summary.textContent=result.status==='references'?result.results.length+' referência(s) candidata(s) — recolher':'Nenhuma referência automática — alternativas';details.append(summary);
+ const note=document.createElement('p');note.className='research-notice';note.textContent=result.note||'Fontes sugeridas devem ser lidas e conferidas.';details.append(note);
+ for(const ref of result.results||[]){
+  const item=document.createElement('article');item.className='reference-article';
+  const title=document.createElement('div');title.className='reference-article-title';buildLink(title,ref.title,ref.url);item.append(title);
+  const meta=document.createElement('small');meta.textContent=[ref.journal,ref.year,'Correspondência temática, não comprovação'].filter(Boolean).join(' · ');item.append(meta);
+  if(ref.extract){const p=document.createElement('p');p.textContent=ref.extract;item.append(p)}
+  details.append(item);
+ }
+ vetResearchLinks(details,result.term||vetResearchFocus(card).term);el.append(details);
+}
+
 // Codifica a senha como UTF-8/Base64URL para permitir símbolos e acentos em um cabeçalho HTTP.
 function vetlyEncodedAccess(value){
  if(value.length<32||value.length>256)throw Error('O código pessoal precisa ter de 32 a 256 caracteres. Confira o código cadastrado na Cloudflare.');
